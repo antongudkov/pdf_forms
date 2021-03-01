@@ -1,6 +1,6 @@
 class FillFormsController < ActionController::API
   def fill
-    hypdf_request_params = {user: ENV['HYPDF_USER'], ENV['HYPDF_PASSWORD']}.merge(params)
+    hypdf_request_params = { user: ENV['HYPDF_USER'], password: ENV['HYPDF_PASSWORD'] }.merge(params)
 
     hypdf_response = HyPDF.fillform(
       'test/fixtures/files/dental_admission.pdf',
