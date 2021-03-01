@@ -1,14 +1,12 @@
-require 'pdf_forms'
-
 class FillFormsController < ActionController::API
   def fill
-    new_form_name = "tmp/dental_admission_filled_#{SecureRandom.hex}.pdf"
+    hypdf_request_params = {user: ENV['HYPDF_USER'], ENV['HYPDF_PASSWORD']}.merge(params)
 
-    pdftk = PdfForms.new('/usr/local/bin/pdftk')
-    pdftk.get_field_names 'test/fixtures/files/dental_admission.pdf'
-    pdftk.fill_form 'test/fixtures/files/dental_admission.pdf', new_form_name, params, flatten: true
+    hypdf_response = HyPDF.fillform(
+      'test/fixtures/files/dental_admission.pdf',
+      hypdf_request_params
+    )
 
-    pdf = File.read(new_form_name)
-    send_data pdf, filename: 'dental_admission_filled.pdf', type: 'application/pdf'
+    send_data hypdf_response[:pdf], filename: 'dental_admission_filled.pdf', type: 'application/pdf'
   end
 end
